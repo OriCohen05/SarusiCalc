@@ -147,6 +147,9 @@
                 alert('Sarusi ya zain, 6!');
                 document.getElementById("result").classList.add('six');
             }
+            else{
+                document.getElementById("result").classList.remove('six'); //Only six for mamas guys
+            }
             document.getElementById("result").innerText = response.ok ? result.result : result.error;
 
             if (response.ok) {
