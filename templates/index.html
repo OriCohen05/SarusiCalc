@@ -5,26 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <style>
-        *{
-            font-size: 1.5em;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .six{
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e2a47, #4b6cb7);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+            transition: background 0.3s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffdf3d;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            letter-spacing: 2px;
+        }
+
+        .calculator-container {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+            width: 350px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        select, input, button {
+            font-size: 1.2em;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #4b6cb7;
+            outline: none;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        select:hover, input:hover, button:hover {
+            background-color: #444;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        button {
+            background: linear-gradient(135deg, #ffdf3d, #ff6b6b);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+
+        button:active {
+            transform: scale(0.98);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #ffdf3d;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        .six {
             animation-duration: 3s;
             animation-fill-mode: both;
             animation-name: spin;
             color: red;
             font-size: 2em;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            
+            font-family: 'Verdana', sans-serif;
+            text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.5);
         }
+
         @keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
-}
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Add a glowing animation to the result */
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px #ffdf3d, 0 0 20px #ffdf3d, 0 0 30px #ffdf3d, 0 0 40px #ffdf3d;
+            }
+            100% {
+                text-shadow: 0 0 10px #ff6b6b, 0 0 20px #ff6b6b, 0 0 30px #ff6b6b, 0 0 40px #ff6b6b;
+            }
+        }
+
+        .result.glowing {
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
     </style>
 </head>
-    <body>
-        <h1>Calculator</h1>
+<body>
+    <div class="calculator-container">
+        <h1>Calculates all the amayat!</h1>
         <select name="operation" id="operation">
             <option value="ADD" default>ADD</option>
             <option value="DIVIDE">DIVIDE</option>
@@ -35,24 +129,30 @@
         <input type="number" id="operand1" placeholder="First Operand">
         <input type="number" id="operand2" placeholder="Second Operand">
         <button onclick="calculate()">Calculate</button>
-        <p id="result"></p>
-        <script>
-            async function calculate() {
-                const operation = document.getElementById("operation").value;
-                const operand1 = parseFloat(document.getElementById("operand1").value);
-                const operand2 = parseFloat(document.getElementById("operand2").value);
-                const response = await fetch('/calculate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ operation, operand1, operand2 })
-                });
-                const result = await response.json();
-                if(result.result == '6'){
-                    alert('Sarusi ya zain, 6!')
-                    document.getElementById("result").classList.add('six')
-                }
-                document.getElementById("result").innerText = response.ok ? result.result : result.error;
+        <p id="result" class="result"></p>
+    </div>
+
+    <script>
+        async function calculate() {
+            const operation = document.getElementById("operation").value;
+            const operand1 = parseFloat(document.getElementById("operand1").value);
+            const operand2 = parseFloat(document.getElementById("operand2").value);
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ operation, operand1, operand2 })
+            });
+            const result = await response.json();
+            if (result.result == '6') {
+                alert('Sarusi ya zain, 6!');
+                document.getElementById("result").classList.add('six');
             }
-        </script>
-    </body>
-    </html>
+            document.getElementById("result").innerText = response.ok ? result.result : result.error;
+
+            if (response.ok) {
+                document.getElementById("result").classList.add('glowing');
+            }
+        }
+    </script>
+</body>
+</html>
