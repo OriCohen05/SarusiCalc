@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        *{
+            font-size: 1.5em;
+        }
+        .six{
+            animation-duration: 3s;
+            animation-fill-mode: both;
+            animation-name: spin;
+            color: red;
+            font-size: 2em;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            
+        }
+        @keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+    </style>
+</head>
+    <body>
+        <h1>Calculator</h1>
+        <select name="operation" id="operation">
+            <option value="ADD" default>ADD</option>
+            <option value="DIVIDE">DIVIDE</option>
+            <option value="MULTIPLY">MULTIPLY</option>
+            <option value="SUBTRACT">SUBTRACT</option>
+            <option value="MAMAS">MAMAS</option>
+        </select>
+        <input type="number" id="operand1" placeholder="First Operand">
+        <input type="number" id="operand2" placeholder="Second Operand">
+        <button onclick="calculate()">Calculate</button>
+        <p id="result"></p>
+        <script>
+            async function calculate() {
+                const operation = document.getElementById("operation").value;
+                const operand1 = parseFloat(document.getElementById("operand1").value);
+                const operand2 = parseFloat(document.getElementById("operand2").value);
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ operation, operand1, operand2 })
+                });
+                const result = await response.json();
+                if(result.result == '6'){
+                    alert('Sarusi ya zain, 6!')
+                    document.getElementById("result").classList.add('six')
+                }
+                document.getElementById("result").innerText = response.ok ? result.result : result.error;
+            }
+        </script>
+    </body>
+    </html>
